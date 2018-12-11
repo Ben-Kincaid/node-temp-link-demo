@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Node Temporary Links Demo</h1>
+    <form method="post" id="link-gen-form">
+      <input type="text" class="name" placeholder="enter guests name" />
+      <input
+        type="number"
+        class="time"
+        placeholder="enter length of stay (in minutes)"
+      />
+      <button type="submit">Generate Temporary Link</button>
+    </form>
+
+    <pre id="link-spot"></pre>
+    <script>
+      const form = document.getElementById("link-gen-form");
+      const nameField = document.querySelector("input.name");
+      const timeField = document.querySelector("input.time");
+      const linkResField = document.getElementById("link-spot");
+
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        var stayTime = timeField.value;
+        var currDate = new Date();
+        var expDate = new Date(currDate.getTime() + stayTime * 60000);
+
+        generateTempLink({
+          name: nameField.value,
+          signInDate: currDate,
+          expDate: expDate
+        });
+      });
+
+      function generateTempLink(options) {
+        let name = options.name,
+          time = options.time;
+
+        var request = new XMLHttpRequest();
+        request.open("POST", "/api/links/generate", true);
+        request.setRequestHeader(
+          "Content-Type",
+          "application/json; charset=UTF-8"
+        );
+
+        request.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            var resp = JSON.parse(request.responseText);
+
+            linkResField.innerHTML =
+              '<a href = "' +
+              window.location.origin +
+              "/guest/" +
+              resp.linkString +
+              '">' +
+              window.location.origin +
+              "/guest/" +
+              resp.linkString +
+              "</a>";
+          }
+        };
+
+        request.send(JSON.stringify(options));
+      }
+    </script>
+  </body>
+</html>

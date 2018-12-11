@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>This is a temporary link for {{ name }}!</h1>
+    <h3>This link will expire in <span id="minutes"></span> Minutes</h3>
+    <script>
+      var minutesEl = document.getElementById("minutes");
+      var expDate = new Date("{{expDate}}");
+
+      var today = new Date();
+
+      const minutes = parseInt(
+        (Math.abs(expDate.getTime() - today.getTime()) / (1000 * 60)) % 60
+      );
+      const seconds = parseInt(
+        (Math.abs(expDate.getTime() - today.getTime()) / 1000) % 60
+      );
+
+      addCountdown(minutesEl, minutes, seconds);
+
+      function addCountdown(element, minutes, seconds) {
+        var mins = minutes;
+        var sec = seconds;
+        setInterval(function() {
+          if (mins < 0) {
+            element.innerHTML = "this link has expired.";
+          } else {
+            element.innerHTML = mins + " : " + sec;
+          }
+
+          sec--;
+          if (sec == 00) {
+            mins--;
+            sec = 60;
+          }
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>
