@@ -7,10 +7,13 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>This is a temporary link for {{ name }}!</h1>
-    <h3>This link will expire in <span id="minutes"></span> Minutes</h3>
+    <h1>This is a temporary link for guest: {{ name }}.</h1>
+    <h3 id="exp-text">
+      This link will expire in <span id="minutes"></span> Minutes
+    </h3>
     <script>
       var minutesEl = document.getElementById("minutes");
+      var expTextEl = document.getElementById("exp-text");
       var expDate = new Date("{{expDate}}");
 
       var today = new Date();
@@ -29,7 +32,7 @@
         var sec = seconds;
         setInterval(function() {
           if (mins < 0) {
-            element.innerHTML = "this link has expired.";
+            expTextEl.innerHTML = "this link has expired.";
           } else {
             element.innerHTML = mins + " : " + sec;
           }
